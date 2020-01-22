@@ -1,10 +1,14 @@
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
 import urllib.request
 import json
 
+
 # Redmine REST API
 # user data tag List
-#
-#
+
+
 class JsonUserdata(object):
     def __init__(self, name:str, id: int):
         self.NAME = name
@@ -19,15 +23,19 @@ class ProjectData(object):
 
 # Redmine REST API
 # Ticket data tag List
-#
-#
 
 #
 # Redmine Http Accsess
 #
 class RedmineHttp:
     # redmineのプロジェクト一覧を取得
-    def __init__(self,host,api_key):
+    def __init__(self):
+
+        dotenv_path = join(dirname(__file__), '.env')
+        load_dotenv(dotenv_path)
+        host= os.environ.get("REDMINE_URL") # 環境変数の値をAPに代入
+        api_key = os.environ.get("REDMINE_PASSWORD")
+
         self.POST = []
         self.API_KEY = api_key
         self.HOST = host
@@ -120,7 +128,7 @@ class RedmineHttp:
 
 if __name__ == '__main__':
     # この時にredmine上に存在するプロジェクトリストを取得
-    redmine_api = RedmineHttp('$URL/redmine','password')
+    redmine_api = RedmineHttp()
     # 特定のRedmineプロジェクトにおけるメンバーリストを取得
     redmine_api.GetProjectMembers('dcc')
     # プロジェクトのチケット一覧取得
@@ -129,7 +137,6 @@ if __name__ == '__main__':
     redmine_api.AddTicketStr('dcc', 2, u'PYTHONから登録した2',u'チケット内容\n', 'nsugiyama' )
 
 
-    # TODO: passwordを暗号化
     # 1. 特定のプロジェクトの誰かのチケットを取得する
     # 2. 特定のプロジェクトのredmineチケットを登録する
     # 3. tracker_id = 1:バグ 2:機能 3:....
